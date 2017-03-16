@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var si = require('systeminformation');
-var getBrowserLanguage = require('get-browser-language');
+var language = require('browser-language');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -26,8 +26,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
-var lan = getBrowserLanguage();
-console.log(lan);
+app.use(language());
+
+app.route('/system').get(function(req,res){
+  ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+  var info = {
+    'ipaddress' : ip,
+    'language' : req.headers['accept-language'].split(',')[0],
+    'software' : req.headers['user-agent'].split(') ')[0].split(' (')[1]
+  };
+  res.send(info);
+})
 
 si.networkConnections(function(data){
   console.log(data);
