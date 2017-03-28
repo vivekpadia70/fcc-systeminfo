@@ -28,6 +28,8 @@ app.use('/users', users);
 
 app.use(language());
 
+app.set('port', (process.env.PORT || 8000));
+
 app.route('/system').get(function(req,res){
   ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
   var info = {
@@ -73,5 +75,7 @@ app.use(function(err, req, res, next) {
     });
 });
 
-
+app.listen(app.get('port'), function(){
+  console.log("server listening on " + app.get('port'));
+})
 module.exports = app;
