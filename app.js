@@ -7,8 +7,6 @@ var bodyParser = require('body-parser');
 var si = require('systeminformation');
 var language = require('browser-language');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -23,14 +21,12 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
 
 app.use(language());
 
 app.set('port', (process.env.PORT || 8000));
 
-app.route('/system').get(function(req,res){
+app.route('/').get(function(req,res){
   ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
   var info = {
     'ipaddress' : ip,
